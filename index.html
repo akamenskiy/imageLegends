@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Legends</title>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <input id="upload" type="file" accept="image/jpeg, image/png" />
+</div>
+<script>
+    const addLegend = (event) => {
+        const newLegend = document.createElement('div');
+        const legendDefaultText = document.createTextNode('New Legend');
+        const preview = document.getElementById('preview');
+
+        newLegend.appendChild(legendDefaultText);
+        newLegend.style.position = 'absolute';
+        newLegend.style.left = `${event.pageX / preview.getBoundingClientRect().width * 100}%`;
+        newLegend.style.top = `${(event.pageY) / preview.getBoundingClientRect().height * 100}%`;
+        newLegend.style.transform = 'translateY(-19px)';
+        newLegend.style.display = 'inline';
+        newLegend.contentEditable = 'true';
+
+        document.getElementById('container').appendChild(newLegend);
+    }
+
+    const showPreview = () => {
+        if (document.getElementById('preview')) {
+            document.getElementById('preview').removeEventListener('click', addLegend, false);
+        }
+
+        if (document.getElementById('container')) {
+            document.getElementById('container').remove();
+        }
+
+        const fileReader = new FileReader();
+        const uploadedFile = document.getElementById('upload').files[0];
+
+        fileReader.onload = (event) => {
+            const container = document.createElement('div');
+            const img = new Image();
+
+            container.style.position = 'relative';
+            container.id = 'container';
+
+            document.getElementById('app').prepend(container);
+
+            img.onload = function() {
+                img.style.display = 'block';
+                if (img.width > img.height) {
+                    img.style.width = '100vw';
+                    img.style.height = 'auto';
+                    container.style.height = 'min-content';
+                } else {
+                    img.style.width = 'auto';
+                    img.style.height = '100vh';
+                    container.style.width = 'min-content';
+                }
+            };
+            img.id = 'preview';
+            img.src = event.target.result;
+            img.addEventListener('click', addLegend, false);
+            container.appendChild(img);
+        };
+
+        if (uploadedFile) {
+            fileReader.readAsDataURL(uploadedFile);
+        }
+    };
+
+    document.getElementById('upload').onchange = showPreview;
+</script>
+</body>
+</html>
