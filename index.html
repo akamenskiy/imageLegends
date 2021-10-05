@@ -7,6 +7,25 @@
         body {
             margin: 0;
         }
+        .container {
+            position: relative;
+        }
+        .preview {
+            display: block;
+        }
+        .preview__wide {
+            width: 100vw;
+            height: auto;
+        }
+        .preview__tall {
+            width: auto;
+            height: 100vh;
+        }
+        .legend {
+            position: absolute;
+            display: inline;
+            transform: translateY(-19px);
+        }
     </style>
 </head>
 <body>
@@ -18,13 +37,12 @@
         const newLegend = document.createElement('div');
         const legendDefaultText = document.createTextNode('New Legend');
         const preview = document.getElementById('preview');
+        const { width, height } = preview.getBoundingClientRect();
 
         newLegend.appendChild(legendDefaultText);
-        newLegend.style.position = 'absolute';
-        newLegend.style.left = `${event.pageX / preview.getBoundingClientRect().width * 100}%`;
-        newLegend.style.top = `${(event.pageY) / preview.getBoundingClientRect().height * 100}%`;
-        newLegend.style.transform = 'translateY(-19px)';
-        newLegend.style.display = 'inline';
+        newLegend.classList.add('legend');
+        newLegend.style.left = `${event.pageX / width * 100}%`;
+        newLegend.style.top = `${(event.pageY) / height * 100}%`;
         newLegend.contentEditable = 'true';
 
         document.getElementById('container').appendChild(newLegend);
@@ -46,20 +64,18 @@
             const container = document.createElement('div');
             const img = new Image();
 
-            container.style.position = 'relative';
+            container.className = 'container';
             container.id = 'container';
 
             document.getElementById('app').prepend(container);
 
             img.onload = function() {
-                img.style.display = 'block';
+                img.classList.add('preview');
                 if (img.width > img.height) {
-                    img.style.width = '100vw';
-                    img.style.height = 'auto';
+                    img.classList.add('preview__wide')
                     container.style.height = 'min-content';
                 } else {
-                    img.style.width = 'auto';
-                    img.style.height = '100vh';
+                    img.classList.add('preview__tall');
                     container.style.width = 'min-content';
                 }
             };
