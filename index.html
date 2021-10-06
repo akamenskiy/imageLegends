@@ -73,10 +73,8 @@
                 img.classList.add('preview');
                 if (img.width > img.height) {
                     img.classList.add('preview__wide')
-                    container.style.height = 'min-content';
                 } else {
                     img.classList.add('preview__tall');
-                    container.style.width = 'min-content';
                 }
             };
             img.id = 'preview';
